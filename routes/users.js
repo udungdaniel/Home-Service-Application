@@ -20,6 +20,8 @@ const User = require('../models/User');
  *     responses:
  *       200:
  *         description: List of users
+ *       500:
+ *         description: Server error
  */
 router.get('/', async (req, res) => {
     try {
@@ -41,6 +43,20 @@ router.get('/', async (req, res) => {
  *   get:
  *     summary: Get a user by ID
  *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: MongoDB User ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User found
+ *       400:
+ *         description: Invalid user ID
+ *       404:
+ *         description: User not found
  */
 router.get('/:id', async (req, res) => {
     try {
@@ -77,6 +93,26 @@ router.get('/:id', async (req, res) => {
  *   post:
  *     summary: Create a new user
  *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *           example:
+ *             name: Daniel Alfred
+ *             email: daniel@example.com
+ *             githubId: "12345678"
+ *             role: customer
+ *             phone: "08012345678"
+ *             address: Abuja, Nigeria
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       400:
+ *         description: Invalid user data
+ *       409:
+ *         description: Email already exists
  */
 router.post('/', async (req, res) => {
     try {
@@ -123,6 +159,32 @@ router.post('/', async (req, res) => {
  *   put:
  *     summary: Update a user
  *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: MongoDB User ID
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *           example:
+ *             name: Daniel Alfred Updated
+ *             email: daniel@example.com
+ *             role: artisan
+ *             phone: "08012345678"
+ *             address: Abuja, Nigeria
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       400:
+ *         description: Invalid user ID or data
+ *       404:
+ *         description: User not found
  */
 router.put('/:id', async (req, res) => {
     try {
@@ -170,6 +232,20 @@ router.put('/:id', async (req, res) => {
  *   delete:
  *     summary: Delete a user
  *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: MongoDB User ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       400:
+ *         description: Invalid user ID
+ *       404:
+ *         description: User not found
  */
 router.delete('/:id', async (req, res) => {
     try {
