@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema(
+<<<<<<< HEAD
 {
     providerId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -52,5 +53,42 @@ const serviceSchema = new mongoose.Schema(
 {
     timestamps: true
 });
+=======
+    {
+        serviceName: {
+            type: String,
+            required: true
+        },
+        category: {
+            type: String,
+            required: true
+        },
+        description: {
+            type: String
+        },
+        price: {
+            type: Number,
+            required: true
+        },
+        availability: {
+            type: Boolean,
+            default: true
+        },
+        providerId: {
+            type: String
+        },
+        rating: {
+            type: Number,
+            default: 0
+        },
+        imageUrl: {
+            type: String
+        }
+    },
+    {
+        timestamps: true
+    }
+);
+>>>>>>> 75c6108a8af99525d49e4d7b64c889e21e33702f
 
 module.exports = mongoose.model('Service', serviceSchema);

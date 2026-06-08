@@ -7,6 +7,11 @@ const userRoutes = require('./routes/users');
 const serviceRoutes = require('./routes/services');
 
 const connectDB = require('./config/db');
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("./swagger-output.json");
+
+const userRoutes = require('./routes/users');
+const serviceRoutes = require('./routes/services');
 
 dotenv.config();
 
@@ -24,10 +29,15 @@ app.use('/api/services', serviceRoutes);
 app.use(cors());
 app.use(express.json());
 
+<<<<<<< HEAD
+=======
+// Session
+>>>>>>> 75c6108a8af99525d49e4d7b64c889e21e33702f
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
         resave: false,
+<<<<<<< HEAD
         saveUninitialized: false
     })
 );
@@ -36,10 +46,36 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Home Route
+=======
+        saveUninitialized: false,
+        cookie: { secure: false }
+    })
+);
+
+// Swagger
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerFile, {
+        explorer: true
+    })
+);
+
+// Routes
+app.use('/users', userRoutes);
+app.use('/services', serviceRoutes);
+
+// Health route
+/**
+ * #swagger.tags = ['Health']
+ * #swagger.summary = 'API Health Check'
+ */
+>>>>>>> 75c6108a8af99525d49e4d7b64c889e21e33702f
 app.get('/', (req, res) => {
     res.send('Home Services Application API Running');
 });
 
+<<<<<<< HEAD
 // Login with GitHub
 app.get(
     '/auth/github',
@@ -86,6 +122,9 @@ app.get('/me', (req, res) => {
     res.json(req.user);
 });
 
+=======
+// Start server
+>>>>>>> 75c6108a8af99525d49e4d7b64c889e21e33702f
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
