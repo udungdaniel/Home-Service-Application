@@ -8,8 +8,7 @@ const userRoutes = require('./routes/users');
 const serviceRoutes = require('./routes/services');
 
 const connectDB = require('./config/db');
-const swaggerUi = require("swagger-ui-express");
-const swaggerFile = require("./swagger-output.json");
+const swaggerDocs = require('./config/swagger');
 
 dotenv.config();
 
@@ -32,7 +31,9 @@ app.use(
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        cookie: { secure: false }
+        cookie: {
+            secure: false
+        }
     })
 );
 
@@ -40,14 +41,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Swagger
-app.use(
-    "/api-docs",
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerFile, {
-        explorer: true
-    })
-);
+// Swagger Documentation
+swaggerDocs(app);
 
 // Routes
 app.use('/api/users', userRoutes);
@@ -93,7 +88,7 @@ app.get('/logout', (req, res) => {
     });
 });
 
-// Current user
+// Current User
 app.get('/me', (req, res) => {
     if (!req.isAuthenticated()) {
         return res.status(401).json({
@@ -104,7 +99,7 @@ app.get('/me', (req, res) => {
     res.json(req.user);
 });
 
-// Start server
+// Start Server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
