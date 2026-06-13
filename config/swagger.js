@@ -115,10 +115,6 @@ const options = {
                     ],
 
                     properties: {
-                        _id: {
-                            type: 'string'
-                        },
-
                         providerId: {
                             type: 'string'
                         },
@@ -212,10 +208,7 @@ const options = {
                     type: 'object',
 
                     properties: {
-                        _id: {
-                            type: 'string'
-                        },
-
+                        
                         userId: {
                             type: 'string'
                         },
