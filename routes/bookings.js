@@ -19,6 +19,8 @@ const { ensureAuthenticated } = require('../middleware/authMiddleware');
  *   get:
  *     summary: Get all bookings
  *     tags: [Bookings]
+ *     security:
+ *       - sessionAuth: []
  *     responses:
  *       200:
  *         description: List of bookings
@@ -31,7 +33,10 @@ router.get('/', async (req, res) => {
             .populate('customerId', 'name email')
             .populate('serviceId', 'serviceName price');
 
-        res.status(200).json(bookings);
+        res.status(200).json({
+            success: true,
+            data: bookings
+        });
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -50,9 +55,9 @@ router.get('/', async (req, res) => {
  *       - in: path
  *         name: id
  *         required: true
- *         description: Booking ID
  *         schema:
  *           type: string
+ *         description: Booking ID
  *     responses:
  *       200:
  *         description: Booking found
@@ -81,7 +86,10 @@ router.get('/:id', async (req, res) => {
             });
         }
 
-        res.status(200).json(booking);
+        res.status(200).json({
+            success: true,
+            data: booking
+        });
     } catch (err) {
         res.status(500).json({
             success: false,
@@ -96,6 +104,8 @@ router.get('/:id', async (req, res) => {
  *   post:
  *     summary: Create a new booking
  *     tags: [Bookings]
+ *     security:
+ *       - sessionAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -110,15 +120,20 @@ router.get('/:id', async (req, res) => {
  *             properties:
  *               customerId:
  *                 type: string
+ *                 example: "64a1f2c9d8b3a1e2f1234567"
  *               serviceId:
  *                 type: string
+ *                 example: "64a1f2c9d8b3a1e2f7654321"
  *               bookingDate:
  *                 type: string
- *                 format: date
+ *                 format: date-time
+ *                 example: "2026-06-13T10:00:00Z"
  *               totalPrice:
  *                 type: number
+ *                 example: 100
  *               notes:
  *                 type: string
+ *                 example: "Please arrive on time"
  *     responses:
  *       201:
  *         description: Booking created successfully
@@ -127,10 +142,16 @@ router.get('/:id', async (req, res) => {
  *       404:
  *         description: Service not found
  */
-router.post('/', async (req, res) => {
+router.post('/', ensureAuthenticated, async (req, res) => {
     try {
-        const { customerId, serviceId, bookingDate, totalPrice, notes } =
-            req.body;
+        const { customerId, serviceId, bookingDate, totalPrice, notes } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(serviceId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid service ID'
+            });
+        }
 
         const service = await Service.findById(serviceId);
 
@@ -156,6 +177,7 @@ router.post('/', async (req, res) => {
             message: 'Booking created successfully',
             data: savedBooking
         });
+
     } catch (err) {
         res.status(400).json({
             success: false,
@@ -170,6 +192,8 @@ router.post('/', async (req, res) => {
  *   put:
  *     summary: Update booking status
  *     tags: [Bookings]
+ *     security:
+ *       - sessionAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -190,8 +214,24 @@ router.post('/', async (req, res) => {
  *       200:
  *         description: Booking updated successfully
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', ensureAuthenticated, async (req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid booking ID'
+            });
+        }
+
+        const allowedStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+
+        if (req.body.status && !allowedStatuses.includes(req.body.status)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid status value'
+            });
+        }
+
         const updatedBooking = await Booking.findByIdAndUpdate(
             req.params.id,
             { status: req.body.status },
@@ -210,6 +250,7 @@ router.put('/:id', async (req, res) => {
             message: 'Booking updated successfully',
             data: updatedBooking
         });
+
     } catch (err) {
         res.status(400).json({
             success: false,
@@ -224,21 +265,30 @@ router.put('/:id', async (req, res) => {
  *   delete:
  *     summary: Delete a booking
  *     tags: [Bookings]
+ *     security:
+ *       - sessionAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: Booking ID
  *         schema:
  *           type: string
+ *         description: Booking ID
  *     responses:
  *       200:
  *         description: Booking deleted successfully
  *       404:
  *         description: Booking not found
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', ensureAuthenticated, async (req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid booking ID'
+            });
+        }
+
         const deleted = await Booking.findByIdAndDelete(req.params.id);
 
         if (!deleted) {
@@ -252,6 +302,7 @@ router.delete('/:id', async (req, res) => {
             success: true,
             message: 'Booking deleted successfully'
         });
+
     } catch (err) {
         res.status(500).json({
             success: false,
