@@ -191,6 +191,13 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
  *   delete:
  *     summary: Delete a review
  *     tags: [Reviews]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Review ID
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Review deleted successfully

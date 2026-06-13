@@ -222,8 +222,15 @@ router.put('/:id', async (req, res) => {
  * @swagger
  * /api/bookings/{id}:
  *   delete:
- *     summary: Delete booking
+ *     summary: Delete a booking
  *     tags: [Bookings]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Booking ID
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Booking deleted successfully

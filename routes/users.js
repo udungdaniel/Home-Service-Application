@@ -197,11 +197,16 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
  *   delete:
  *     summary: Delete a user
  *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: User ID
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: User deleted successfully
- *       400:
- *         description: Invalid user ID
  *       404:
  *         description: User not found
  */

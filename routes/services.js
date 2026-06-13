@@ -183,9 +183,16 @@ router.put('/:id', protect, validateObjectId, validateService, async (req, res) 
  *   delete:
  *     summary: Delete a service
  *     tags: [Services]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Service ID
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: Service deleted
+ *         description: Service deleted successfully
  *       404:
  *         description: Service not found
  */
