@@ -139,17 +139,21 @@ router.post('/', async (req, res) => {
  *   put:
  *     summary: Update a user
  *     tags: [Users]
- *     security:
- *       - sessionAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       200:
  *         description: User updated successfully
- *       400:
- *         description: Invalid user ID or data
- *       401:
- *         description: Authentication required
- *       404:
- *         description: User not found
  */
 router.put('/:id', ensureAuthenticated, async (req, res) => {
     try {
@@ -193,11 +197,16 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
  *   delete:
  *     summary: Delete a user
  *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: User ID
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: User deleted successfully
- *       400:
- *         description: Invalid user ID
  *       404:
  *         description: User not found
  */

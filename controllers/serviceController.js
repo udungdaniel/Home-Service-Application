@@ -54,14 +54,12 @@ const createService = async (req, res) => {
     try {
 
         const service = await Service.create({
-            providerId: req.user ? req.user._id : req.body.providerId,
+            providerId: req.user._id,
             serviceName: req.body.serviceName,
             category: req.body.category,
             description: req.body.description,
             price: req.body.price,
-            availability: req.body.availability,
-            rating: req.body.rating,
-            imageUrl: req.body.imageUrl
+            availability: req.body.availability
         });
 
         res.status(201).json({

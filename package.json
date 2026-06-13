@@ -1,7 +1,7 @@
 {
   "name": "home-service-application",
   "version": "1.0.0",
-  "description": "**Member:**\r - Obakeng Kennedy Diphala\r - Daniel Udung\r - Steve Buamikusu Kalala",
+  "description": "Home Service Application API - Members: Obakeng Kennedy Diphala, Daniel Udung, Steve Buamikusu Kalala, Iyanu Adeleye, Joshua Matthew Wagstaff",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/udungdaniel/Home-Service-Application#readme",
   "dependencies": {
+    "axios": "^1.17.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
@@ -29,9 +30,7 @@
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "swagger-autogen": "^2.23.7",
-
     "swagger-jsdoc": "^6.3.0",
-
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
