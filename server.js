@@ -50,10 +50,11 @@ app.use(
     })
 ); 
 
+// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport middleware
+// Routes
 app.use('/api/users', userRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/bookings', bookingRoutes);
