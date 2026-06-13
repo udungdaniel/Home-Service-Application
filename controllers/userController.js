@@ -20,7 +20,6 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({
                 success: false,
@@ -52,7 +51,6 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
     try {
-
         const existingUser = await User.findOne({
             email: req.body.email
         });
@@ -82,10 +80,6 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-
-        // Authentication is enforced in the route
-        // using ensureAuthenticated middleware.
-
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({
                 success: false,
@@ -125,7 +119,6 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({
                 success: false,

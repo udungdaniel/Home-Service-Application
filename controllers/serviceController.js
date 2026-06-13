@@ -1,8 +1,11 @@
+
 const mongoose = require('mongoose');
+
 const Service = require('../models/Service');
 
 const getAllServices = async (req, res) => {
     try {
+
         const services = await Service.find()
             .populate('providerId')
             .sort({ createdAt: -1 });
@@ -14,11 +17,12 @@ const getAllServices = async (req, res) => {
             success: false,
             message: error.message
         });
-    }
+  }
 };
 
 const getServiceById = async (req, res) => {
     try {
+
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({
                 success: false,
@@ -48,6 +52,7 @@ const getServiceById = async (req, res) => {
 
 const createService = async (req, res) => {
     try {
+
         const service = await Service.create({
             providerId: req.user ? req.user._id : req.body.providerId,
             serviceName: req.body.serviceName,
@@ -75,6 +80,7 @@ const createService = async (req, res) => {
 
 const updateService = async (req, res) => {
     try {
+
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({
                 success: false,
@@ -128,6 +134,7 @@ const updateService = async (req, res) => {
 
 const deleteService = async (req, res) => {
     try {
+
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({
                 success: false,
@@ -168,6 +175,7 @@ const deleteService = async (req, res) => {
             success: false,
             message: error.message
         });
+
     }
 };
 

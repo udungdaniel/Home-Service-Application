@@ -8,9 +8,11 @@ const userRoutes = require('./routes/users');
 const serviceRoutes = require('./routes/services');
 
 const connectDB = require('./config/db');
+
 const swaggerDocs = require('./config/swagger');
 
 const errorMiddleware = require('./middleware/errorMiddleware');
+
 
 dotenv.config();
 
@@ -28,16 +30,21 @@ app.use(cors());
 app.use(express.json());
 
 // Session
+
 app.set('trust proxy', 1);
+
 
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
+
         cookie: {
-            secure: process.env.NODE_ENV === 'production'
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
         }
+
     })
 ); 
 
@@ -45,6 +52,7 @@ app.use(
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 // Swagger Documentation
 swaggerDocs(app);
@@ -57,6 +65,7 @@ app.use('/api/services', serviceRoutes);
 app.get('/', (req, res) => {
     res.send('Home Services Application API Running');
 });
+
 
 // GitHub OAuth
 app.get(
@@ -116,6 +125,7 @@ app.use((req, res) => {
 app.use(errorMiddleware);
 
 // Start Server
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
