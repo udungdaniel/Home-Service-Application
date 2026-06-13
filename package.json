@@ -1,7 +1,7 @@
 {
   "name": "home-service-application",
   "version": "1.0.0",
-  "description": "**Member:**\r - Obakeng Kennedy Diphala\r - Daniel Udung\r - Steve Buamikusu Kalala",
+  "description": "Home Service Application API - Members: Obakeng Kennedy Diphala, Daniel Udung, Steve Buamikusu Kalala, Iyanu Adeleye, Joshua Matthew Wagstaff",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
