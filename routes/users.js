@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 
 const User = require('../models/User');
+const { ensureAuthenticated } = require('../middleware/authMiddleware');
 
 /**
  * @swagger
@@ -159,6 +160,8 @@ router.post('/', async (req, res) => {
  *   put:
  *     summary: Update a user
  *     tags: [Users]
+ *     security:
+ *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -183,10 +186,12 @@ router.post('/', async (req, res) => {
  *         description: User updated successfully
  *       400:
  *         description: Invalid user ID or data
+ *       401:
+ *         description: Authentication required
  *       404:
  *         description: User not found
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', ensureAuthenticated, async (req, res) => {
     try {
 
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {

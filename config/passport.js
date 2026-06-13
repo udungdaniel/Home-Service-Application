@@ -16,39 +16,53 @@ passport.use(
 
         async (accessToken, refreshToken, profile, done) => {
             try {
-
                 let user = await User.findOne({
                     githubId: profile.id
                 });
 
                 if (!user) {
+                    const email =
+                        profile.emails &&
+                        profile.emails.length
+                            ? profile.emails[0].value
+                            : null;
 
-                    user = await User.create({
-                        githubId: profile.id,
-                        name:
-                            profile.displayName ||
-                            profile.username,
+                    // Check if the email already exists
+                    if (email) {
+                        user = await User.findOne({
+                            email: email
+                        });
+                    }
 
-                        email:
-                            profile.emails &&
-                            profile.emails.length
-                                ? profile.emails[0].value
-                                : `${profile.username}@github.local`,
+                    if (!user) {
+                        // Create a new user
+                        user = await User.create({
+                            githubId: profile.id,
+                            name:
+                                profile.displayName ||
+                                profile.username,
 
-                        role: 'customer',
+                            email:
+                                email ||
+                                `${profile.username}@github.local`,
 
-                        phone: '',
+                            role: 'customer',
 
-                        address: ''
-                    });
+                            phone: '',
+
+                            address: ''
+                        });
+                    } else {
+                        // Link existing account to GitHub
+                        user.githubId = profile.id;
+                        await user.save();
+                    }
                 }
 
                 return done(null, user);
 
             } catch (error) {
-
                 return done(error, null);
-
             }
         }
     )
@@ -72,15 +86,12 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-
         const user = await User.findById(id);
 
         done(null, user);
 
     } catch (error) {
-
         done(error, null);
-
     }
 });
 

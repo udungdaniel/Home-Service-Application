@@ -4,6 +4,12 @@ const router = express.Router();
 
 const Service = require('../models/Service');
 
+const { protect } = require('../middleware/authMiddleware');
+const {
+    validateObjectId,
+    validateService
+} = require('../middleware/validateMiddleware');
+
 /**
  * @swagger
  * tags:
@@ -23,7 +29,7 @@ const Service = require('../models/Service');
  *       500:
  *         description: Server error
  */
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try {
         const services = await Service.find()
             .populate('providerId')
@@ -32,10 +38,7 @@ router.get('/', async (req, res) => {
         res.status(200).json(services);
 
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
+        next(err);
     }
 });
 
@@ -60,16 +63,8 @@ router.get('/', async (req, res) => {
  *       404:
  *         description: Service not found
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', validateObjectId, async (req, res, next) => {
     try {
-
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid service ID'
-            });
-        }
-
         const service = await Service.findById(req.params.id)
             .populate('providerId');
 
@@ -83,10 +78,7 @@ router.get('/:id', async (req, res) => {
         res.status(200).json(service);
 
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
+        next(err);
     }
 });
 
@@ -116,36 +108,39 @@ router.get('/:id', async (req, res) => {
  *         description: Service created successfully
  *       400:
  *         description: Invalid service data
+ *       401:
+ *         description: Authentication required
  */
-router.post('/', async (req, res) => {
-    try {
+router.post(
+    '/',
+    protect,
+    validateService,
+    async (req, res, next) => {
+        try {
+            const service = new Service({
+                providerId: req.body.providerId,
+                serviceName: req.body.serviceName,
+                category: req.body.category,
+                description: req.body.description,
+                price: req.body.price,
+                availability: req.body.availability,
+                rating: req.body.rating,
+                imageUrl: req.body.imageUrl
+            });
 
-        const service = new Service({
-            providerId: req.body.providerId,
-            serviceName: req.body.serviceName,
-            category: req.body.category,
-            description: req.body.description,
-            price: req.body.price,
-            availability: req.body.availability,
-            rating: req.body.rating,
-            imageUrl: req.body.imageUrl
-        });
+            const savedService = await service.save();
 
-        const savedService = await service.save();
+            res.status(201).json({
+                success: true,
+                message: 'Service created successfully',
+                data: savedService
+            });
 
-        res.status(201).json({
-            success: true,
-            message: 'Service created successfully',
-            data: savedService
-        });
-
-    } catch (err) {
-        res.status(400).json({
-            success: false,
-            message: err.message
-        });
+        } catch (err) {
+            next(err);
+        }
     }
-});
+);
 
 /**
  * @swagger
@@ -179,48 +174,45 @@ router.post('/', async (req, res) => {
  *         description: Service updated successfully
  *       400:
  *         description: Invalid service ID or data
+ *       401:
+ *         description: Authentication required
  *       404:
  *         description: Service not found
  */
-router.put('/:id', async (req, res) => {
-    try {
+router.put(
+    '/:id',
+    protect,
+    validateObjectId,
+    validateService,
+    async (req, res, next) => {
+        try {
+            const updatedService = await Service.findByIdAndUpdate(
+                req.params.id,
+                req.body,
+                {
+                    new: true,
+                    runValidators: true
+                }
+            );
 
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid service ID'
-            });
-        }
-
-        const updatedService = await Service.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
+            if (!updatedService) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Service not found'
+                });
             }
-        );
 
-        if (!updatedService) {
-            return res.status(404).json({
-                success: false,
-                message: 'Service not found'
+            res.status(200).json({
+                success: true,
+                message: 'Service updated successfully',
+                data: updatedService
             });
+
+        } catch (err) {
+            next(err);
         }
-
-        res.status(200).json({
-            success: true,
-            message: 'Service updated successfully',
-            data: updatedService
-        });
-
-    } catch (err) {
-        res.status(400).json({
-            success: false,
-            message: err.message
-        });
     }
-});
+);
 
 /**
  * @swagger
@@ -240,41 +232,37 @@ router.put('/:id', async (req, res) => {
  *         description: Service deleted successfully
  *       400:
  *         description: Invalid service ID
+ *       401:
+ *         description: Authentication required
  *       404:
  *         description: Service not found
  */
-router.delete('/:id', async (req, res) => {
-    try {
+router.delete(
+    '/:id',
+    protect,
+    validateObjectId,
+    async (req, res, next) => {
+        try {
+            const deletedService = await Service.findByIdAndDelete(
+                req.params.id
+            );
 
-        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid service ID'
+            if (!deletedService) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Service not found'
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: 'Service deleted successfully'
             });
+
+        } catch (err) {
+            next(err);
         }
-
-        const deletedService = await Service.findByIdAndDelete(
-            req.params.id
-        );
-
-        if (!deletedService) {
-            return res.status(404).json({
-                success: false,
-                message: 'Service not found'
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: 'Service deleted successfully'
-        });
-
-    } catch (err) {
-        res.status(500).json({
-            success: false,
-            message: err.message
-        });
     }
-});
+);
 
 module.exports = router;

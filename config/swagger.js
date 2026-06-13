@@ -26,10 +26,18 @@ const options = {
         ],
 
         components: {
-            schemas: {
+            securitySchemes: {
+                sessionAuth: {
+                    type: 'apiKey',
+                    in: 'cookie',
+                    name: 'connect.sid'
+                }
+            },
 
+            schemas: {
                 User: {
                     type: 'object',
+                    required: ['name', 'email'],
                     properties: {
                         _id: {
                             type: 'string'
@@ -38,7 +46,8 @@ const options = {
                             type: 'string'
                         },
                         email: {
-                            type: 'string'
+                            type: 'string',
+                            format: 'email'
                         },
                         githubId: {
                             type: 'string'
@@ -62,8 +71,17 @@ const options = {
 
                 Service: {
                     type: 'object',
+                    required: [
+                        'providerId',
+                        'serviceName',
+                        'category',
+                        'price'
+                    ],
                     properties: {
                         _id: {
+                            type: 'string'
+                        },
+                        providerId: {
                             type: 'string'
                         },
                         serviceName: {
@@ -80,9 +98,6 @@ const options = {
                         },
                         availability: {
                             type: 'boolean'
-                        },
-                        providerId: {
-                            type: 'string'
                         },
                         rating: {
                             type: 'number'
@@ -166,6 +181,12 @@ const options = {
             }
         },
 
+        security: [
+            {
+                sessionAuth: []
+            }
+        ],
+
         tags: [
             {
                 name: 'Users',
@@ -186,9 +207,7 @@ const options = {
         ]
     },
 
-    apis: [
-        './routes/*.js'
-    ]
+    apis: ['./routes/*.js']
 };
 
 const swaggerSpec = swaggerJsDoc(options);

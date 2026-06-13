@@ -10,6 +10,8 @@ const serviceRoutes = require('./routes/services');
 const connectDB = require('./config/db');
 const swaggerDocs = require('./config/swagger');
 
+const errorMiddleware = require('./middleware/errorMiddleware');
+
 dotenv.config();
 
 // Connect DB
@@ -26,16 +28,19 @@ app.use(cors());
 app.use(express.json());
 
 // Session
+app.set('trust proxy', 1);
+
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: {
-            secure: false
+            secure: process.env.NODE_ENV === 'production'
         }
     })
-);
+); 
+
 
 // Passport middleware
 app.use(passport.initialize());
@@ -98,6 +103,17 @@ app.get('/me', (req, res) => {
 
     res.json(req.user);
 });
+
+// 404 Handler
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'Route not found'
+    });
+});
+
+// Global Error Handler
+app.use(errorMiddleware);
 
 // Start Server
 app.listen(PORT, () => {
