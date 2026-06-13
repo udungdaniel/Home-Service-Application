@@ -30,38 +30,73 @@ const options = {
                 sessionAuth: {
                     type: 'apiKey',
                     in: 'cookie',
-                    name: 'connect.sid'
+                    name: 'connect.sid',
+                    description:
+                        'Session cookie generated after GitHub authentication.'
+                },
+
+                GitHubOAuth: {
+                    type: 'oauth2',
+                    description:
+                        'GitHub OAuth authentication flow.',
+                    flows: {
+                        authorizationCode: {
+                            authorizationUrl:
+                                'https://github.com/login/oauth/authorize',
+
+                            tokenUrl:
+                                'https://github.com/login/oauth/access_token',
+
+                            scopes: {
+                                'user:email':
+                                    'Access authenticated user email'
+                            }
+                        }
+                    }
                 }
             },
 
             schemas: {
                 User: {
                     type: 'object',
+
                     required: ['name', 'email'],
+
                     properties: {
                         _id: {
                             type: 'string'
                         },
+
                         name: {
                             type: 'string'
                         },
+
                         email: {
                             type: 'string',
                             format: 'email'
                         },
+
                         githubId: {
                             type: 'string'
                         },
+
                         role: {
                             type: 'string',
-                            enum: ['customer', 'artisan', 'admin']
+                            enum: [
+                                'customer',
+                                'artisan',
+                                'admin'
+                            ]
                         },
+
                         phone: {
                             type: 'string'
                         },
+
                         address: {
                             type: 'string'
                         },
+
                         createdAt: {
                             type: 'string',
                             format: 'date-time'
@@ -71,40 +106,51 @@ const options = {
 
                 Service: {
                     type: 'object',
+
                     required: [
                         'providerId',
                         'serviceName',
                         'category',
                         'price'
                     ],
+
                     properties: {
                         _id: {
                             type: 'string'
                         },
+
                         providerId: {
                             type: 'string'
                         },
+
                         serviceName: {
                             type: 'string'
                         },
+
                         category: {
                             type: 'string'
                         },
+
                         description: {
                             type: 'string'
                         },
+
                         price: {
                             type: 'number'
                         },
+
                         availability: {
                             type: 'boolean'
                         },
+
                         rating: {
                             type: 'number'
                         },
+
                         imageUrl: {
                             type: 'string'
                         },
+
                         createdAt: {
                             type: 'string',
                             format: 'date-time'
@@ -114,20 +160,25 @@ const options = {
 
                 Booking: {
                     type: 'object',
+
                     properties: {
                         _id: {
                             type: 'string'
                         },
+
                         userId: {
                             type: 'string'
                         },
+
                         serviceId: {
                             type: 'string'
                         },
+
                         bookingDate: {
                             type: 'string',
                             format: 'date-time'
                         },
+
                         status: {
                             type: 'string',
                             enum: [
@@ -137,9 +188,11 @@ const options = {
                                 'cancelled'
                             ]
                         },
+
                         location: {
                             type: 'string'
                         },
+
                         paymentStatus: {
                             type: 'string',
                             enum: [
@@ -148,6 +201,7 @@ const options = {
                                 'failed'
                             ]
                         },
+
                         notes: {
                             type: 'string'
                         }
@@ -156,22 +210,28 @@ const options = {
 
                 Review: {
                     type: 'object',
+
                     properties: {
                         _id: {
                             type: 'string'
                         },
+
                         userId: {
                             type: 'string'
                         },
+
                         serviceId: {
                             type: 'string'
                         },
+
                         rating: {
                             type: 'number'
                         },
+
                         comment: {
                             type: 'string'
                         },
+
                         createdAt: {
                             type: 'string',
                             format: 'date-time'
@@ -192,14 +252,17 @@ const options = {
                 name: 'Users',
                 description: 'Manage users'
             },
+
             {
                 name: 'Services',
                 description: 'Manage artisan services'
             },
+
             {
                 name: 'Bookings',
                 description: 'Manage service bookings'
             },
+
             {
                 name: 'Reviews',
                 description: 'Manage reviews and ratings'
@@ -218,7 +281,8 @@ const swaggerDocs = (app) => {
         swaggerUi.serve,
         swaggerUi.setup(swaggerSpec, {
             explorer: true,
-            customSiteTitle: 'Home Service API Documentation'
+            customSiteTitle:
+                'Home Service API Documentation'
         })
     );
 
