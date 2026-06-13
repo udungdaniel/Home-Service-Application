@@ -1,42 +1,236 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 
-const {
-    getAllUsers,
-    getUserById,
-    createUser,
-    updateUser,
-    deleteUser
-} = require('../controllers/userController');
+const User = require('../models/User');
+const { ensureAuthenticated } = require('../middleware/authMiddleware');
 
 /**
- * #swagger.tags = ['Users']
- * #swagger.summary = 'Get all users'
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management endpoints
  */
-router.get('/', getAllUsers);
 
 /**
- * #swagger.tags = ['Users']
- * #swagger.summary = 'Get user by ID'
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: List of users
+ *       500:
+ *         description: Server error
  */
-router.get('/:id', getUserById);
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.find().sort({ createdAt: -1 });
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+});
 
 /**
- * #swagger.tags = ['Users']
- * #swagger.summary = 'Create a new user'
+ * @swagger
+ * /api/users/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: MongoDB User ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User found
+ *       400:
+ *         description: Invalid user ID
+ *       404:
+ *         description: User not found
  */
-router.post('/', createUser);
+router.get('/:id', async (req, res) => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid user ID'
+            });
+        }
+
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json(user);
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+});
 
 /**
- * #swagger.tags = ['Users']
- * #swagger.summary = 'Update a user'
+ * @swagger
+ * /api/users:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       400:
+ *         description: Invalid user data
+ *       409:
+ *         description: Email already exists
  */
-router.put('/:id', updateUser);
+router.post('/', async (req, res) => {
+    try {
+        const existingUser = await User.findOne({ email: req.body.email });
+
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: 'Email already exists'
+            });
+        }
+
+        const user = new User(req.body);
+        const savedUser = await user.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'User created successfully',
+            data: savedUser
+        });
+
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            message: err.message
+        });
+    }
+});
 
 /**
- * #swagger.tags = ['Users']
- * #swagger.summary = 'Delete a user'
+ * @swagger
+ * /api/users/{id}:
+ *   put:
+ *     summary: Update a user
+ *     tags: [Users]
+ *     security:
+ *       - sessionAuth: []
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       400:
+ *         description: Invalid user ID or data
+ *       401:
+ *         description: Authentication required
+ *       404:
+ *         description: User not found
  */
-router.delete('/:id', deleteUser);
+router.put('/:id', ensureAuthenticated, async (req, res) => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid user ID'
+            });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            data: updatedUser
+        });
+
+    } catch (err) {
+        res.status(400).json({
+            success: false,
+            message: err.message
+        });
+    }
+});
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   delete:
+ *     summary: Delete a user
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       400:
+ *         description: Invalid user ID
+ *       404:
+ *         description: User not found
+ */
+router.delete('/:id', async (req, res) => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid user ID'
+            });
+        }
+
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+
+        if (!deletedUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User deleted successfully'
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+});
+
 
 module.exports = router;
