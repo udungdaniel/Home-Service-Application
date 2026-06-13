@@ -4,25 +4,40 @@ const userSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            required: true
+
+            required: true,
+            trim: true
         },
+
         email: {
             type: String,
             required: true,
-            unique: true
+            unique: true,
+            lowercase: true,
+            trim: true
         },
+
         githubId: {
-            type: String
+            type: String,
+            unique: true,
+            sparse: true
         },
+
         role: {
             type: String,
+            enum: ['customer', 'artisan', 'admin'],
             default: 'customer'
         },
+
         phone: {
-            type: String
+            type: String,
+            default: ''
         },
+
         address: {
-            type: String
+            type: String,
+            default: ''
+
         }
     },
     {
