@@ -1,12 +1,14 @@
-const authMiddleware = (req, res, next) => {
+const ensureAuthenticated = (req, res, next) => {
     if (req.isAuthenticated && req.isAuthenticated()) {
         return next();
     }
 
     return res.status(401).json({
         success: false,
-        message: 'Authentication required. Please log in with GitHub.'
+        message: 'Authentication required'
     });
 };
 
-module.exports = authMiddleware;
+module.exports = {
+    ensureAuthenticated
+};
