@@ -1,7 +1,7 @@
 const Review = require('../models/Review');
 
 
-const createReview = async (req, res) {
+const createReview = async (req, res) => {
     try{
         const review = await Review.create(req.body);
 

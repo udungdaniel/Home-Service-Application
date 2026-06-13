@@ -6,6 +6,8 @@ const passport = require('passport');
 
 const userRoutes = require('./routes/users');
 const serviceRoutes = require('./routes/services');
+const bookingRoutes = require('./routes/bookings');
+const reviewRoutes = require('./routes/reviews');
 
 const connectDB = require('./config/db');
 
@@ -48,18 +50,18 @@ app.use(
     })
 ); 
 
-
-// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Passport middleware
+app.use('/api/users', userRoutes);
+app.use('/api/services', serviceRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 
 // Swagger Documentation
 swaggerDocs(app);
-
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api/services', serviceRoutes);
 
 // Home Route
 app.get('/', (req, res) => {
@@ -104,8 +106,9 @@ app.get('/logout', (req, res) => {
 
 // Current User
 app.get('/me', (req, res) => {
-    if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated?.()) {
         return res.status(401).json({
+            success: false,
             message: 'Not authenticated'
         });
     }
