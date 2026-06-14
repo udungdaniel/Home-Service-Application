@@ -1,0 +1,231 @@
+### Test Server Root
+
+GET http://localhost:8181/
+
+###
+
+##################################################
+
+# USERS
+
+##################################################
+
+### GET all users
+
+GET http://localhost:8181/api/users
+
+###
+
+### GET user by ID
+
+GET http://localhost:8181/api/users/USER_ID_HERE
+
+###
+
+### CREATE user (requires authentication)
+
+POST http://localhost:8181/api/users
+Content-Type: application/json
+
+{
+"name": "John Doe",
+"email": "[john@example.com](mailto:john@example.com)",
+"password": "Password123",
+"role": "customer"
+}
+
+###
+
+### UPDATE user (requires authentication)
+
+PUT http://localhost:8181/api/users/USER_ID_HERE
+Content-Type: application/json
+
+{
+"name": "John Smith"
+}
+
+###
+
+### DELETE user (requires authentication)
+
+DELETE http://localhost:8181/api/users/USER_ID_HERE
+
+###
+
+##################################################
+
+# SERVICES
+
+##################################################
+
+### GET all services
+
+GET http://localhost:8181/api/services
+
+###
+
+### GET service by ID
+
+GET http://localhost:8181/api/services/SERVICE_ID_HERE
+
+###
+
+### CREATE service (requires authentication)
+
+POST http://localhost:8181/api/services
+Content-Type: application/json
+
+{
+"serviceName": "House Cleaning",
+"category": "Cleaning",
+"description": "Professional house cleaning service",
+"price": 120,
+"availability": true,
+"rating": 5,
+"imageUrl": "https://example.com/cleaning.jpg"
+}
+
+###
+
+### UPDATE service (requires authentication)
+
+PUT http://localhost:8181/api/services/SERVICE_ID_HERE
+Content-Type: application/json
+
+{
+"price": 150,
+"availability": false
+}
+
+###
+
+### DELETE service (requires authentication)
+
+DELETE http://localhost:8181/api/services/SERVICE_ID_HERE
+
+###
+
+##################################################
+
+# BOOKINGS
+
+##################################################
+
+### GET all bookings
+
+GET http://localhost:8181/api/bookings
+
+###
+
+### GET booking by ID
+
+GET http://localhost:8181/api/bookings/BOOKING_ID_HERE
+
+###
+
+### CREATE booking (requires authentication)
+
+POST http://localhost:8181/api/bookings
+Content-Type: application/json
+
+{
+"customerId": "CUSTOMER_ID_HERE",
+"serviceId": "SERVICE_ID_HERE",
+"bookingDate": "2026-06-20T10:00:00.000Z",
+"totalPrice": 120,
+"notes": "Please arrive on time"
+}
+
+###
+
+### UPDATE booking status (requires authentication)
+
+PUT http://localhost:8181/api/bookings/BOOKING_ID_HERE
+Content-Type: application/json
+
+{
+"status": "confirmed"
+}
+
+###
+
+### DELETE booking (requires authentication)
+
+DELETE http://localhost:8181/api/bookings/BOOKING_ID_HERE
+
+###
+
+##################################################
+
+# REVIEWS
+
+##################################################
+
+### GET all reviews
+
+GET http://localhost:8181/api/reviews
+
+###
+
+### GET review by ID
+
+GET http://localhost:8181/api/reviews/REVIEW_ID_HERE
+
+###
+
+### CREATE review (requires authentication)
+
+POST http://localhost:8181/api/reviews
+Content-Type: application/json
+
+{
+"userId": "USER_ID_HERE",
+"serviceId": "SERVICE_ID_HERE",
+"rating": 5,
+"comment": "Excellent service!"
+}
+
+###
+
+### UPDATE review (requires authentication)
+
+PUT http://localhost:8181/api/reviews/REVIEW_ID_HERE
+Content-Type: application/json
+
+{
+"rating": 4,
+"comment": "Good service overall."
+}
+
+###
+
+### DELETE review (requires authentication)
+
+DELETE http://localhost:8181/api/reviews/REVIEW_ID_HERE
+
+###
+
+##################################################
+
+# AUTH ROUTES
+
+##################################################
+
+### Login with GitHub
+
+GET http://localhost:8181/auth/github
+
+###
+
+### Current logged-in user
+
+GET http://localhost:8181/me
+
+###
+
+### Logout
+
+GET http://localhost:8181/logout
+
+###
