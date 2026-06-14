@@ -63,9 +63,7 @@ const options = {
                     required: ['name', 'email'],
 
                     properties: {
-                        _id: {
-                            type: 'string'
-                        },
+                        
 
                         name: {
                             type: 'string'
@@ -208,7 +206,7 @@ const options = {
                     type: 'object',
 
                     properties: {
-                        
+
                         userId: {
                             type: 'string'
                         },
