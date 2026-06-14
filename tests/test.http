@@ -22,21 +22,21 @@ GET http://localhost:8181/api/users/USER_ID_HERE
 
 ###
 
-### CREATE user
+### CREATE user (requires authentication)
 
 POST http://localhost:8181/api/users
 Content-Type: application/json
 
 {
 "name": "John Doe",
-"email": "[john@email.com](mailto:john@email.com)",
+"email": "[john@example.com](mailto:john@example.com)",
 "password": "Password123",
 "role": "customer"
 }
 
 ###
 
-### UPDATE user
+### UPDATE user (requires authentication)
 
 PUT http://localhost:8181/api/users/USER_ID_HERE
 Content-Type: application/json
@@ -47,7 +47,7 @@ Content-Type: application/json
 
 ###
 
-### DELETE user
+### DELETE user (requires authentication)
 
 DELETE http://localhost:8181/api/users/USER_ID_HERE
 
@@ -71,7 +71,7 @@ GET http://localhost:8181/api/services/SERVICE_ID_HERE
 
 ###
 
-### CREATE service
+### CREATE service (requires authentication)
 
 POST http://localhost:8181/api/services
 Content-Type: application/json
@@ -81,12 +81,14 @@ Content-Type: application/json
 "category": "Cleaning",
 "description": "Professional house cleaning service",
 "price": 120,
-"availability": true
+"availability": true,
+"rating": 5,
+"imageUrl": "https://example.com/cleaning.jpg"
 }
 
 ###
 
-### UPDATE service
+### UPDATE service (requires authentication)
 
 PUT http://localhost:8181/api/services/SERVICE_ID_HERE
 Content-Type: application/json
@@ -98,7 +100,7 @@ Content-Type: application/json
 
 ###
 
-### DELETE service
+### DELETE service (requires authentication)
 
 DELETE http://localhost:8181/api/services/SERVICE_ID_HERE
 
@@ -116,13 +118,13 @@ GET http://localhost:8181/api/bookings
 
 ###
 
-### GET bookings by customer
+### GET booking by ID
 
-GET http://localhost:8181/api/bookings/customer/CUSTOMER_ID_HERE
+GET http://localhost:8181/api/bookings/BOOKING_ID_HERE
 
 ###
 
-### CREATE booking
+### CREATE booking (requires authentication)
 
 POST http://localhost:8181/api/bookings
 Content-Type: application/json
@@ -137,14 +139,20 @@ Content-Type: application/json
 
 ###
 
-### UPDATE booking status
+### UPDATE booking status (requires authentication)
 
-PATCH http://localhost:8181/api/bookings/BOOKING_ID_HERE
+PUT http://localhost:8181/api/bookings/BOOKING_ID_HERE
 Content-Type: application/json
 
 {
 "status": "confirmed"
 }
+
+###
+
+### DELETE booking (requires authentication)
+
+DELETE http://localhost:8181/api/bookings/BOOKING_ID_HERE
 
 ###
 
@@ -166,13 +174,13 @@ GET http://localhost:8181/api/reviews/REVIEW_ID_HERE
 
 ###
 
-### CREATE review
+### CREATE review (requires authentication)
 
 POST http://localhost:8181/api/reviews
 Content-Type: application/json
 
 {
-"customerId": "CUSTOMER_ID_HERE",
+"userId": "USER_ID_HERE",
 "serviceId": "SERVICE_ID_HERE",
 "rating": 5,
 "comment": "Excellent service!"
@@ -180,7 +188,7 @@ Content-Type: application/json
 
 ###
 
-### UPDATE review
+### UPDATE review (requires authentication)
 
 PUT http://localhost:8181/api/reviews/REVIEW_ID_HERE
 Content-Type: application/json
@@ -192,7 +200,7 @@ Content-Type: application/json
 
 ###
 
-### DELETE review
+### DELETE review (requires authentication)
 
 DELETE http://localhost:8181/api/reviews/REVIEW_ID_HERE
 
@@ -200,17 +208,17 @@ DELETE http://localhost:8181/api/reviews/REVIEW_ID_HERE
 
 ##################################################
 
-# AUTHENTICATION
+# AUTH ROUTES
 
 ##################################################
 
-### GitHub Login
+### Login with GitHub
 
 GET http://localhost:8181/auth/github
 
 ###
 
-### Current Logged-in User
+### Current logged-in user
 
 GET http://localhost:8181/me
 
