@@ -80,16 +80,13 @@ app.get(
 
 // GitHub Callback
 app.get(
-    '/auth/github/callback',
-    passport.authenticate('github', {
-        failureRedirect: '/'
-    }),
-    (req, res) => {
-        res.json({
-            success: true,
-            user: req.user
-        });
-    }
+  '/auth/github/callback',
+  passport.authenticate('github', {
+    failureRedirect: '/'
+  }),
+  (req, res) => {
+    res.redirect('/api-docs');
+  }
 );
 
 // Logout
