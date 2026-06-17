@@ -19,7 +19,9 @@ const errorMiddleware = require('./middleware/errorMiddleware');
 dotenv.config();
 
 // Connect DB
-connectDB();
+if (process.env.NODE_ENV !== 'test') {
+    connectDB();
+}
 
 // Passport config
 require('./config/passport');
@@ -127,6 +129,10 @@ app.use(errorMiddleware);
 
 // Start Server
 
-app.listen(PORT, () => {
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+}
+
+module.exports = app;
