@@ -105,7 +105,7 @@ router.get('/:id', async (req, res) => {
  *       409:
  *         description: Email already exists
  */
-router.post('/', async (req, res) => {
+router.post('/', ensureAuthenticated, async (req, res) => {
     try {
         const existingUser = await User.findOne({ email: req.body.email });
 
@@ -210,7 +210,7 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
  *       404:
  *         description: User not found
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', ensureAuthenticated, async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({
