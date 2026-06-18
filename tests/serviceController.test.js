@@ -126,5 +126,6 @@ describe('Service Controller - Unit Tests (GET Routes)', () => {
                 message: ' Internal server error'
             });
         });
-    });    
+    });
+});    
     
