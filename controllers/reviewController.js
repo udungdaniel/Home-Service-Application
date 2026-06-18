@@ -22,7 +22,7 @@ const getAllReviews = async (req,res) => {
         res.status(200).json(reviews);
     }catch(err) {
         res.status(500).json({
-            sucess: false,
+            success: false,
             message: err.message
         });
     }
