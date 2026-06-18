@@ -76,7 +76,10 @@ describe("Review Controller - Unit Tests (GET Routes)", () => {
 
         it('should return 500 if an unexpected error occurs fetch', async () => {
             req.params.id = '60c72b2f9b1d8b2bad754cc1';
-            jest.spyOn('Review, findById').mockRejectedValue(new Error('Database error'));
+            jest
+              .spyOn(Review, "findById")
+              .mockRejectedValue(new Error("Database error"));
+
             
             await getReviewById(req, res);
 
