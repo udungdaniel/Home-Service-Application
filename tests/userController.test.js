@@ -1,5 +1,5 @@
 const { getAllUsers, getUserById } = require('../controllers/userController');
-const User = require('..models/User');
+const User = require('../models/User');
 const { json } = require('body-parser');
 const mongoose = require('mongoose');
 

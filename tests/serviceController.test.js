@@ -123,7 +123,7 @@ describe('Service Controller - Unit Tests (GET Routes)', () => {
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.json).toHaveBeenCalledWith({
                 success: false,
-                message: ' Internal server error'
+                message: 'Internal server error'
             });
         });
     });
