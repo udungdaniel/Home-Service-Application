@@ -35,7 +35,9 @@ const connectDB = async () => {
             error.message
         );
 
-        process.exit(1);
+        if (process.env.NODE_ENV !== 'test') {
+    process.exit(1);
+}
     }
 };
 
